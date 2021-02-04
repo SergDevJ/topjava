@@ -1,6 +1,5 @@
 package ru.javawebinar.topjava;
 
-import java.util.stream.Stream;
 
 /**
  * @see <a href="http://topjava.herokuapp.com">Demo application</a>

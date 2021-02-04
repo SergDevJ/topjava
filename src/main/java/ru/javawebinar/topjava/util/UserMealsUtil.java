@@ -8,8 +8,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.*;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 
@@ -154,6 +152,5 @@ public class UserMealsUtil {
                         list.stream().mapToInt(UserMeal::getCalories).sum() > caloriesPerDay))).
                 filter(x -> TimeUtil.isBetweenHalfOpen(x.getTime(), startTime, endTime)).
                 collect(Collectors.toList());
-
     }
 }
