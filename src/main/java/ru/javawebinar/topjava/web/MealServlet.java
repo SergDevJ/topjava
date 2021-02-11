@@ -31,7 +31,6 @@ public class MealServlet extends HttpServlet {
             int id = Integer.parseInt(request.getParameter("id"));
             String description = request.getParameter("description");
             int calories = Integer.parseInt(request.getParameter("calories"));
-            System.out.println("*** dateTime: " + request.getParameter("dateTime"));
             LocalDateTime dateTime = LocalDateTime.parse(request.getParameter("dateTime"), dateTimeFormatter);
             Meal meal = new Meal(id, dateTime, description, calories);
             if (id == 0) {
@@ -91,10 +90,5 @@ public class MealServlet extends HttpServlet {
                 break;
             }
         }
-
-
-
-
-
     }
 }
