@@ -88,4 +88,8 @@ public class User extends AbstractNamedEntity {
                 ", caloriesPerDay=" + caloriesPerDay +
                 ')';
     }
+
+    public boolean isNew() {
+        return id == null;
+    }
 }

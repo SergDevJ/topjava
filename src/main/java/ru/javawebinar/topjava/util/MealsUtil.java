@@ -1,7 +1,7 @@
 package ru.javawebinar.topjava.util;
 
 import ru.javawebinar.topjava.model.Meal;
-import ru.javawebinar.topjava.model.MealTo;
+import ru.javawebinar.topjava.to.MealTo;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,8 +36,8 @@ public class MealsUtil {
     }
 
     public static List<MealTo> filterByPredicate(Collection<Meal> meals, int caloriesPerDay, Predicate<Meal> filter) {
-        Map<LocalDate, List<Meal>> collect = meals.stream().
-                collect(Collectors.groupingBy(m -> m.getDateTime().toLocalDate()));
+//        Map<LocalDate, List<Meal>> collect = meals.stream().
+//                collect(Collectors.groupingBy(m -> m.getDateTime().toLocalDate()));
         Map<LocalDate, Integer> caloriesSumByDate = meals.stream()
                 .collect(
                         Collectors.groupingBy(Meal::getDate, Collectors.summingInt(Meal::getCalories))

@@ -16,6 +16,7 @@ public class UserService {
 
     public UserService(UserRepository repository) {
         this.repository = repository;
+        System.out.println(repository.getAll());
     }
 
     public User create(User user) {
