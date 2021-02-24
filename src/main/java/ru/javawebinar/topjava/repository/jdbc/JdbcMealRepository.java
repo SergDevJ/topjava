@@ -1,6 +1,9 @@
 package ru.javawebinar.topjava.repository.jdbc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -23,6 +26,7 @@ public class JdbcMealRepository implements MealRepository {
     private SimpleJdbcInsert insertEntity;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private static final BeanPropertyRowMapper<Meal> ROW_MAPPER = BeanPropertyRowMapper.newInstance(Meal.class);
+    private static Logger log = LoggerFactory.getLogger(JdbcMealRepository.class);
 
 
 
@@ -60,7 +64,12 @@ public class JdbcMealRepository implements MealRepository {
 
     @Override
     public Meal get(int id, int userId) {
-        return jdbcTemplate.queryForObject("SELECT * FROM meals WHERE id = ? AND user_id = ?", ROW_MAPPER, id, userId);
+        try {
+            return jdbcTemplate.queryForObject("SELECT * FROM meals WHERE id = ? AND user_id = ?", ROW_MAPPER, id, userId);
+        } catch (EmptyResultDataAccessException e) {
+            log.warn(String.format("meal not found for id=%d for user id=%d", id, userId), e);
+            return null;
+        }
     }
 
     @Override
