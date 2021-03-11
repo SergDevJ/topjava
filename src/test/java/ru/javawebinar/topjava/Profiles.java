@@ -16,6 +16,12 @@ public class Profiles {
             POSTGRES_DB = "postgres",
             HSQL_DB = "hsqldb";
 
+    public static final String DB_IMPLEMENTATION = POSTGRES_DB;
+
+    public static String[] getActiveProfiles() {
+        return new String[] {REPOSITORY_IMPLEMENTATION, DB_IMPLEMENTATION};
+    }
+
     //  Get DB profile depending of DB driver in classpath
     public static String getActiveDbProfile() {
         if (ClassUtils.isPresent("org.postgresql.Driver", null)) {
