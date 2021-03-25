@@ -8,6 +8,10 @@
 <body>
 <jsp:include page="fragments/bodyHeader.jsp"/>
 
+<br><br>
+<a href="users/create">Add User</a>
+<br><br>
+
 <section>
     <h3><spring:message code="user.title"/></h3>
 
@@ -19,6 +23,8 @@
             <th><spring:message code="user.roles"/></th>
             <th><spring:message code="user.active"/></th>
             <th><spring:message code="user.registered"/></th>
+            <th></th>
+            <th></th>
         </tr>
         </thead>
         <c:forEach items="${users}" var="user">
@@ -30,6 +36,9 @@
                 <td><%=user.isEnabled()%>
                 </td>
                 <td><fmt:formatDate value="${user.registered}" pattern="dd-MM-yyyy"/></td>
+
+                <td><a href="users/update?id=${user.id}"><spring:message code="common.updateTitle"/></a></td>
+                <td><a href="users/delete?id=${user.id}"><spring:message code="common.deleteTitle"/></a></td>
             </tr>
         </c:forEach>
     </table>

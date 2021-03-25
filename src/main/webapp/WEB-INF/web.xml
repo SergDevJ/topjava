@@ -25,7 +25,7 @@
 
     <context-param>
         <param-name>spring.profiles.default</param-name>
-        <param-value>hsqldb,datajpa</param-value>
+        <param-value>hsqldb,jdbc</param-value>
 <!--        <param-value>postgres,datajpa</param-value>-->
     </context-param>
 

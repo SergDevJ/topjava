@@ -1,6 +1,5 @@
-package ru.javawebinar.topjava.web;
+package ru.javawebinar.topjava.web.meal;
 
-import org.hsqldb.auth.AuthUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,8 @@ import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.service.UserService;
 import ru.javawebinar.topjava.to.MealTo;
 import ru.javawebinar.topjava.util.MealsUtil;
-import ru.javawebinar.topjava.web.meal.MealRestController;
+import ru.javawebinar.topjava.web.SecurityUtil;
+import ru.javawebinar.topjava.web.meal.context.MealFilterParams;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -29,44 +29,11 @@ import java.util.List;
 import java.util.Objects;
 
 
-class MealControllerContext {
-    static class MealFilterParams {
-        LocalDate startDate;
-        LocalDate endDate;
-        LocalTime startTime;
-        LocalTime endTime;
-
-        public MealFilterParams(LocalDate startDate, LocalDate endDate, LocalTime startTime, LocalTime endTime) {
-            this.startDate = startDate;
-            this.endDate = endDate;
-            this.startTime = startTime;
-            this.endTime = endTime;
-        }
-    }
-
-    static private ThreadLocal<MealFilterParams> mealFilterParams = new ThreadLocal<>();
-
-    static void setMealFilterParams(LocalDate startDate, LocalDate endDate,
-                                    LocalTime startTime, LocalTime endTime) {
-        mealFilterParams.set(new MealFilterParams(startDate, endDate, startTime, endTime));
-    }
-
-    static MealFilterParams getMealFilterParams() {
-        return mealFilterParams.get() != null ? mealFilterParams.get() : new MealFilterParams(null, null, null, null);
-//        return mealFilterParams.get();
-    }
-}
-
-
-
 @Controller
 @RequestMapping("meals")
 public class JspMealController {
     private static final Logger log = LoggerFactory.getLogger(JspMealController.class);
     private DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-
-    MealControllerContext mealControllerContext;
-//    MealControllerContext mealControllerContext = new MealControllerContext();
 
 
     @Autowired
@@ -89,7 +56,7 @@ public class JspMealController {
     public String createMeal(Model model) {
         log.info("enter createMeal()");
 
-        final int userId = SecurityUtil.authUserId();
+        model.addAttribute("action", "create");
         model.addAttribute("meal", new Meal(LocalDateTime.now().truncatedTo(ChronoUnit.MINUTES), "", MealsUtil.DEFAULT_CALORIES_PER_DAY));
         return "mealForm";
     }
@@ -100,10 +67,12 @@ public class JspMealController {
                              Model model) {
         log.info("enter updateMeal(): id={}", id);
 
-        Objects.requireNonNull(id, "id can't be null for update");
+        Objects.requireNonNull(id, "meal not found with id=" + id + " for update");
         final int userId = SecurityUtil.authUserId();
         Meal meal = service.get(id, userId);
         request.setAttribute("meal", meal);
+        request.setAttribute("action", "update");
+
 //        model.addAttribute("meal", meal);
         return "mealForm";
     }
@@ -132,11 +101,9 @@ public class JspMealController {
 
 
         HttpSession session = request.getSession();
-        session.setAttribute("mealFilterParams", new MealControllerContext.MealFilterParams(startDate, endDate, startTime, endTime));
+        session.setAttribute("mealFilterParams", new MealFilterParams(startDate, endDate, startTime, endTime));
 
-//        MealControllerContext.setMealFilterParams(startDate, endDate, startTime, endTime);
-        getMeals(request, model);
-        return "meals";
+        return getMeals(request, model);
 //        getMeals(startDate, endDate, startTime, endTime, model)
 
 //        final int userId = SecurityUtil.authUserId();
@@ -145,9 +112,6 @@ public class JspMealController {
     }
 
     @GetMapping("/list")
-//    public String getMeals(@RequestParam(value = "action", required = false) String action,
-//            @RequestParam(value = "id", required = false) Integer id,
-//            Model model) {
     public String getMeals(
 //        @RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
 //        @RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate,
@@ -157,23 +121,19 @@ public class JspMealController {
         Model model) {
 
         HttpSession session = request.getSession();
-        MealControllerContext.MealFilterParams mealFilterParams = (MealControllerContext.MealFilterParams) session.getAttribute("mealFilterParams");
-//        MealControllerContext.MealFilterParams mealFilterParams = MealControllerContext.getMealFilterParams();
+        MealFilterParams mealFilterParams = (MealFilterParams) session.getAttribute("mealFilterParams");
         LocalDate startDate = null;
         LocalDate endDate = null;
         LocalTime startTime = null;
         LocalTime endTime = null;
         if (mealFilterParams != null) {
-            startDate = mealFilterParams.startDate;
-            endDate = mealFilterParams.endDate;
-            startTime = mealFilterParams.startTime;
-            endTime = mealFilterParams.endTime;
+            startDate = mealFilterParams.getStartDate();
+            endDate = mealFilterParams.getEndDate();
+            startTime = mealFilterParams.getStartTime();
+            endTime = mealFilterParams.getEndTime();
         }
 
-
-
         log.info("enter getMeals(): startDate={}, endDate={}, startTime={}, endTime={}", startDate, endDate, startTime, endTime);
-
 
         final int userId = SecurityUtil.authUserId();
         User user = userService.get(userId);
@@ -185,10 +145,6 @@ public class JspMealController {
 //        model.addAttribute("startTime", startTime);
 //        model.addAttribute("endTime", endTime);
 
-        model.addAttribute("startDate", startDate);
-
-
-//        request.setAttribute("startDate", startDate);
         request.setAttribute("startDate", startDate);
         request.setAttribute("endDate", endDate);
         request.setAttribute("startTime", startTime);

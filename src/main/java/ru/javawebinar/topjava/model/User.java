@@ -14,6 +14,7 @@ import org.hibernate.annotations.*;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.validator.constraints.Range;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import javax.persistence.*;

@@ -27,7 +27,7 @@ import static ru.javawebinar.topjava.Profiles.DATAJPA;
 import static ru.javawebinar.topjava.Profiles.JDBC;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-@ActiveProfiles(DATAJPA)
+@ActiveProfiles({DATAJPA, "test"})
 public abstract class AbstractUserServiceTest extends AbstractServiceTest {
 
     @Autowired
@@ -46,8 +46,9 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Before
     public void setup() {
         if (Arrays.stream(env.getActiveProfiles()).noneMatch(p -> p.equalsIgnoreCase("jdbc"))) {
-            cacheManager.getCache("users").clear();
-            jpaUtil.clear2ndLevelHibernateCache();
+            System.out.println(cacheManager.getClass());
+//            cacheManager.getCache("users").clear();
+//            jpaUtil.clear2ndLevelHibernateCache();
         }
     }
 
@@ -81,6 +82,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     public void get() {
         User user = service.get(USER_ID);
+        User user2 = service.get(USER_ID);
 //        User user = service.get(ADMIN_ID);
         USER_MATCHER.assertMatch(user, UserTestData.user);
     }
@@ -112,7 +114,7 @@ public abstract class AbstractUserServiceTest extends AbstractServiceTest {
     @Test
     public void createWithException() throws Exception {
 
-        Assume.assumeFalse(Arrays.stream(env.getActiveProfiles()).anyMatch(p -> p.equalsIgnoreCase("jdbc")));
+//        Assume.assumeFalse(Arrays.stream(env.getActiveProfiles()).anyMatch(p -> p.equalsIgnoreCase("jdbc")));
 
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "  ", "mail@yandex.ru", "password", Role.USER)));
         validateRootCause(ConstraintViolationException.class, () -> service.create(new User(null, "User", "  ", "password", Role.USER)));

@@ -16,8 +16,9 @@
     <hr/>
     <h2><spring:message code="meal.title"/></h2>
 
-    <h2><"param.startDate1:" <%=request.getParameter("startDate") %>></h2>
-    <h2><"param.startDate2:" <%=request.getAttribute("startDate") %>></h2>
+<%--    <h1><"param.startDate1:" <%=request.getParameter("startDate") %>></h1>--%>
+<%--    <h1><"param.startDate2:" <%=request.getAttribute("startDate") %>></h1>--%>
+<%--    <h1><"param.startDate3: ${startDate}"></h1>--%>
 
     <form method="get" action="filter">
         <input type="hidden" name="action" value="filter">
@@ -27,15 +28,15 @@
         </dl>
         <dl>
             <dt><spring:message code="meal.toDate"/></dt>
-            <dd><input type="date" name="endDate" value="${param.endDate}"></dd>
+            <dd><input type="date" name="endDate" value="${endDate}"></dd>
         </dl>
         <dl>
             <dt><spring:message code="meal.fromTime"/></dt>
-            <dd><input type="time" name="startTime" value="${param.startTime}"></dd>
+            <dd><input type="time" name="startTime" value="${startTime}"></dd>
         </dl>
         <dl>
             <dt><spring:message code="meal.toTime"/></dt>
-            <dd><input type="time" name="endTime" value="${param.endTime}"></dd>
+            <dd><input type="time" name="endTime" value="${endTime}"></dd>
         </dl>
         <button type="submit"><spring:message code="meal.filterTitle"/></button>
     </form>
@@ -65,9 +66,9 @@
                 <td>${meal.description}</td>
                 <td>${meal.calories}</td>
 <%--                <td><a href="meals?action=update&id=${meal.id}">Update</a></td>--%>
-                <td><a href="update?id=${meal.id}"><spring:message code="meal.updateTitle"/></a></td>
+                <td><a href="update?id=${meal.id}"><spring:message code="common.updateTitle"/></a></td>
 <%--                <td><a href="meals?action=delete&id=${meal.id}">Delete</a></td>--%>
-                <td><a href="delete?id=${meal.id}"><spring:message code="meal.deleteTitle"/></a></td>
+                <td><a href="delete?id=${meal.id}"><spring:message code="common.deleteTitle"/></a></td>
             </tr>
         </c:forEach>
     </table>
