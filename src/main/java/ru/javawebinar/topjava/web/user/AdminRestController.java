@@ -1,11 +1,13 @@
 package ru.javawebinar.topjava.web.user;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.service.MealService;
 
 import java.net.URI;
 import java.util.List;
@@ -16,6 +18,9 @@ public class AdminRestController extends AbstractUserController {
 
     static final String REST_URL = "/rest/admin/users";
 
+    @Autowired
+    MealService mealService;
+
     @Override
     @GetMapping
     public List<User> getAll() {
@@ -25,8 +30,19 @@ public class AdminRestController extends AbstractUserController {
     @Override
     @GetMapping("/{id}")
     public User get(@PathVariable int id) {
-        return super.get(id);
+        User user = super.get(id);
+        return user;
     }
+
+
+    @GetMapping("/with-meals/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public User getWithMeals(@PathVariable(name = "id") int id) {
+        User user = super.get(id);
+        user.setMeals(mealService.getAll(id));
+        return user;
+    }
+
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> createWithLocation(@RequestBody User user) {
