@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import ru.javawebinar.topjava.service.MealService;
 import ru.javawebinar.topjava.util.MealsUtil;
 
+import javax.servlet.http.HttpServletRequest;
+
 @Controller
 public class RootController {
 
@@ -29,9 +31,10 @@ public class RootController {
     }
 
     @GetMapping("/meals")
-    public String getMeals(Model model) {
+    public String getMeals(HttpServletRequest req, Model model) {
         model.addAttribute("meals",
                 MealsUtil.getTos(mealService.getAll(SecurityUtil.authUserId()), SecurityUtil.authUserCaloriesPerDay()));
+        System.out.println("************: [" + Thread.currentThread().getName() + "] - " + req.getSession().getId());
         return "meals";
     }
 }

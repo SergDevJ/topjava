@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.to.MealTo;
+
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -19,9 +21,10 @@ import java.net.URI;
 public class MealRestController extends AbstractMealController {
     static final String REST_URL = "/rest/profile/meals";
 
-    @Override
+//    @Override
     @GetMapping("/{id}")
-    public Meal get(@PathVariable int id) {
+    public Meal get(HttpServletRequest req, @PathVariable int id) {
+        System.out.println("session ID: " + req.getSession().getId());
         return super.get(id);
     }
 
