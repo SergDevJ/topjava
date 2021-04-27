@@ -1,9 +1,12 @@
 package ru.javawebinar.topjava.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,9 +18,14 @@ import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.repository.UserRepository;
 import ru.javawebinar.topjava.to.UserTo;
 import ru.javawebinar.topjava.util.UserUtil;
+import ru.javawebinar.topjava.util.ValidationUtil;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
+import static ru.javawebinar.topjava.util.UserUtil.*;
 import static ru.javawebinar.topjava.util.UserUtil.prepareToSave;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFound;
 import static ru.javawebinar.topjava.util.ValidationUtil.checkNotFoundWithId;
@@ -29,9 +37,13 @@ public class UserService implements UserDetailsService {
     private final UserRepository repository;
     private final PasswordEncoder passwordEncoder;
 
+//    @Autowired
+//    private ReloadableResourceBundleMessageSource messageSource;
+
     public UserService(UserRepository repository, PasswordEncoder passwordEncoder) {
         this.repository = repository;
         this.passwordEncoder = passwordEncoder;
+//        if (messageSource != null) System.out.println(messageSource.getClass());
     }
 
     @CacheEvict(value = "users", allEntries = true)
@@ -70,7 +82,7 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void update(UserTo userTo) {
         User user = get(userTo.id());
-        prepareAndSave(UserUtil.updateFromTo(user, userTo));
+        prepareAndSave(updateFromTo(user, userTo));
     }
 
     @CacheEvict(value = "users", allEntries = true)
@@ -92,7 +104,25 @@ public class UserService implements UserDetailsService {
 
     private User prepareAndSave(User user) {
         return repository.save(prepareToSave(user, passwordEncoder));
+
+//        try {
+//            return repository.save(prepareToSave(user, passwordEncoder));
+//        } catch (Exception e) {
+//            throw getDetailSqlErrorException(e);
+//        }
     }
+
+//    private RuntimeException getDetailSqlErrorException(Throwable e) {
+//        Throwable root = ValidationUtil.getRootCause(e);
+//        for (Map.Entry<String, RuntimeException> exEntry: SQL_EXCEPTIONS.entrySet()) {
+//            if (root.getMessage().toLowerCase().contains(exEntry.getKey().toLowerCase())) {
+//                RuntimeException result = exEntry.getValue();
+//                result.initCause(e);
+//                return result;
+//            }
+//        }
+//        return new RuntimeException(e.getMessage(), e);
+//    }
 
     public User getWithMeals(int id) {
         return checkNotFoundWithId(repository.getWithMeals(id), id);

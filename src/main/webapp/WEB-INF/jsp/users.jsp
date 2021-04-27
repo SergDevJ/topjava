@@ -72,6 +72,10 @@
                     <span class="fa fa-check"></span>
                     <spring:message code="common.save"/>
                 </button>
+                <button type="button" class="btn btn-primary" onclick="saveRest()">
+                    <span class="fa fa-check"></span>
+                    <spring:message code="common.saveRest" />
+                </button>
             </div>
         </div>
     </div>

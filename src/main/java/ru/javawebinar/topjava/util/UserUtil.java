@@ -1,10 +1,14 @@
 package ru.javawebinar.topjava.util;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import ru.javawebinar.topjava.model.Role;
 import ru.javawebinar.topjava.model.User;
 import ru.javawebinar.topjava.to.UserTo;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserUtil {
 

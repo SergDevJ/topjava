@@ -74,6 +74,30 @@ function save() {
     });
 }
 
+function saveRest() {
+    var id = document.getElementById("id").value;
+    // var js = JSON.stringify($("#detailsForm").serializeArray());
+    var obj = {};
+    obj["id"] = document.getElementById("id").value;
+    obj["name"] = document.getElementById("name").value;
+    obj["email"] = document.getElementById("email").value;
+    obj["password"] = document.getElementById("password").value;
+    console.log(JSON.stringify(obj));
+    var js = JSON.stringify(obj);
+
+    $.ajax({
+        type: "POST",
+        url: ctx.ajaxRestUrl + id,
+        contentType: "application/json; charset=utf-8",
+        data: js
+        // data: JSON.stringify(form.serialize())
+    }).done(function () {
+        $("#editRow").modal("hide");
+        ctx.updateTable();
+        successNoty("common.saved");
+    });
+}
+
 let failedNote;
 
 function closeNoty() {

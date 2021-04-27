@@ -8,8 +8,24 @@
     <meta name="_csrf" content="${_csrf.token}"/>
     <meta name="_csrf_header" content="${_csrf.headerName}"/>
 
+    _csrf.token: ${_csrf.token} <br>
+    _csrf.headerName: ${_csrf.headerName} <br>
+
     <title><spring:message code="app.title"/></title>
     <base href="${pageContext.request.contextPath}/"/>
+
+<%--    <a href='${pageContext.request.contextPath}?language=ru'>Russian</a>--%>
+<%--    ${pageContext.request.contextPath} <br>--%>
+<%--    ${pageContext.request.requestURL} <br>--%>
+
+<%--    <a href='?language=ru'>Russian</a>--%>
+<%--    <a href='?language=en'>English</a>  <!-- (2) --> <br>--%>
+    <a href='${requestScope['javax.servlet.forward.request_uri']}?language=en'>English</a>  <br>
+    <a href='${requestScope['javax.servlet.forward.request_uri']}?language=ru'>Russian</a>  <br>
+    Current Locale : ${pageContext.response.locale}<br>
+<%--    contextPath : ${pageContext.request.contextPath}<br>--%>
+    requestScope: ${requestScope['javax.servlet.forward.request_uri']}<br>
+
 
     <link rel="stylesheet" href="resources/css/style.css?v=2">
     <link rel="stylesheet" href="webjars/bootstrap/4.6.0-1/css/bootstrap.min.css">

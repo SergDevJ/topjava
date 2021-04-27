@@ -1,8 +1,10 @@
 const userAjaxUrl = "admin/users/";
+const userAjaxRestUrl = "rest/admin/users/";
 
 // https://stackoverflow.com/a/5064235/548473
 const ctx = {
     ajaxUrl: userAjaxUrl,
+    ajaxRestUrl: userAjaxRestUrl,
     updateTable: function () {
         $.get(userAjaxUrl, updateTableByData);
     }
